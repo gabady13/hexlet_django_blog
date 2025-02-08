@@ -11,7 +11,6 @@ class IndexView(View):
     })
 
 
-def index(request):
-    return render(request, 'article/index.html', context={
-        'test': 'article',
-    })
+def index(request, tags, article_id):
+    response_text = f"Статья номер {article_id}. Тег {tags}"
+    return HttpResponse(response_text)
