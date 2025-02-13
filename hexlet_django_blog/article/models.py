@@ -10,3 +10,12 @@ class Article(models.Model):
 
     def __str__(self):
         return self.name
+
+# Create your models here.
+class Comment(models.Model):
+    name = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name

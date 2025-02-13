@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 from django.views import View
-
-from hexlet_django_blog.article.models import Article
+from .forms import CommentArticleForm
+from hexlet_django_blog.article.models import Article, Comment
 
 
 class IndexView(View):
@@ -26,3 +26,19 @@ class ArticleView(View):
         return render(request, 'article/show.html', context={
             'article': article,
         })
+
+
+class CommentArticleView(View):
+    # если метод POST, то мы обрабатываем данные
+    def post(self, request, *args, **kwargs):
+        form = CommentArticleForm(request.POST) # Получаем данные формы из запроса
+        if form.is_valid(): # Проверяем данные формы на корректность
+            comment = Comment(
+                name = form.cleaned_data['content'], # Получаем очищенные данные из поля content
+                ) #  и создаем новый комментарий
+            comment.save()
+
+    # если метод GET, то создаем пустую форму
+    def get(self, request, *args, **kwargs):
+        form = CommentArticleForm() # Создаем экземпляр нашей формы
+        return render(request, 'article/comment.html', {'form': form}) 
