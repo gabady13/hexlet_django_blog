@@ -1,7 +1,7 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.views import View
-from .forms import CommentArticleForm
+from .forms import CommentArticleForm, ArticleForm
 from hexlet_django_blog.article.models import Article, Comment
 
 
@@ -42,3 +42,19 @@ class CommentArticleView(View):
     def get(self, request, *args, **kwargs):
         form = CommentArticleForm() # Создаем экземпляр нашей формы
         return render(request, 'article/comment.html', {'form': form}) 
+
+
+class ArticleFormCreateView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = ArticleForm()
+        return render(request, 'article/create.html', {'form': form})
+    
+    def post(self, request, *args, **kwargs):
+        form = ArticleForm(request.POST)
+        if form.is_valid(): # Если данные корректные, то сохраняем данные формы
+            form.save()
+            return redirect('article') # Редирект на указанный маршрут
+        # Если данные некорректные, то возвращаем человека обратно на страницу с заполненной формой
+        return render(request, 'article/create.html', {'form': form})
+        
