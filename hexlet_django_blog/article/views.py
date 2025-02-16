@@ -57,4 +57,22 @@ class ArticleFormCreateView(View):
             return redirect('article') # Редирект на указанный маршрут
         # Если данные некорректные, то возвращаем человека обратно на страницу с заполненной формой
         return render(request, 'article/create.html', {'form': form})
-        
+
+
+class ArticleFormEditView(View):
+
+    def get(self, request, *args, **kwargs):
+        article_id = kwargs.get('id')
+        article = Article.objects.get(id=article_id)
+        form = ArticleForm(instance=article)
+        return render(request, 'article/update.html', {'form': form, 'article_id':article_id})
+    
+    def post(self, request, *args, **kwargs):
+        article_id = kwargs.get('id')
+        article = Article.objects.get(id=article_id)
+        form = ArticleForm(request.POST, instance=article)
+        if form.is_valid():
+            form.save()
+            return redirect('article')
+
+        return render(request, 'article/update.html', {'form': form, 'article_id':article_id})
